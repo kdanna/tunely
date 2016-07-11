@@ -39,13 +39,16 @@ sampleAlbums.push({
 
 $(document).ready(function() {
   console.log('app.js loaded!');
-  renderAlbum(sampleAlbums[0]);
-  // for (var i = 0; i < sampleAlbums.length; i++){
-  //     renderAlbum(sampleAlbums[i]);
-  // }
-sampleAlbums.forEach(renderAlbum);
+  // renderAlbum(sampleAlbums[0]);
+  // sampleAlbums.forEach(renderAlbum);
+
+  $.get('./api/albums', function(data) {
+      console.log(data);
+      data.forEach(renderAlbum);
+  });
 
 });
+
 
 
 

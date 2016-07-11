@@ -68,14 +68,15 @@ app.get('/api', function api_index (req, res){
     documentation_url: "https://github.com/tgaff/tunely/api.md",
     base_url: "http://tunely.herokuapp.com",
     endpoints: [
-      {method: "GET", path: "/api", description: "Describes available endpoints"}
+      {method: "GET", path: "/api", description: "Describes available endpoints"},
+      {method: "GET", path: "/api/albums", description: "Albums available"}
     ]
   });
 });
 
 app.get('/api/albums', function album_index(req, res){
-
-})
+  res.json(albums);
+});
 
 /**********
  * SERVER *

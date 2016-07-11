@@ -5,7 +5,6 @@
  *
  */
 
-
 /* hard-coded data! */
 var sampleAlbums = [];
 sampleAlbums.push({
@@ -39,15 +38,29 @@ sampleAlbums.push({
 
 $(document).ready(function() {
   console.log('app.js loaded!');
-  // renderAlbum(sampleAlbums[0]);
-  // sampleAlbums.forEach(renderAlbum);
-
+  
   $.get('./api/albums', function(data) {
       console.log(data);
       data.forEach(renderAlbum);
   });
 
-});
+  $("form").submit(function( event ) {
+      var formdata = $(this).serialize();
+      console.log(formdata);
+      event.preventDefault();
+
+      $.post('./api/albums', formdata, function(addAlbum){
+        renderAlbum(addAlbum);
+        console.log(addAlbum);
+      });
+  
+    $(this).trigger("reset");
+  });
+
+
+  
+  });
+
 
 
 

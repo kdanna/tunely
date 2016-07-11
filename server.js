@@ -3,12 +3,16 @@
 var db = require('./models');
 //require express in our app
 var express = require('express');
+//require body parser
+var bodyParser = require('body-parser');
+
 // generate a new express app and call it 'app'
 var app = express();
 
 // serve static files from public folder
 app.use(express.static(__dirname + '/public'));
 
+app.use(bodyParser.urlencoded({ extended: true }));
 /************
  * DATABASE *
  ************/
@@ -49,6 +53,21 @@ app.get('/api/albums', function album_index(req, res){
   res.json(albums);
 });
 });
+
+app.post('/api/albums', function create(req, res){
+  var newAlbum = req.body;
+  var genres = newAlbum.genres.split(",");
+  newAlbum.genres = genres;
+
+  db.Album.create(newAlbum, function (err, album){
+    if(err){
+      res.send("error is " + err);
+    }
+    res.json(album);
+  });
+});
+
+
 /**********
  * SERVER *
  **********/

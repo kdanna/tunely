@@ -52,16 +52,50 @@ $( "form" ).submit( function() {
    event.preventDefault();
 });
 
-$('#albums').on('click', '.add-song', function(e) {
-   console.log('asdfasdfasdf');
+
+$('#albums').on('click', '.add-song', function(response) {
+   console.log('album onclick is working');
    var id= $(this).parents('.album').data('album-id'); // "5665ff1678209c64e51b4e7b"
    console.log('id',id);
    $('#songModal').data('album-id', id);
    $('#songModal').modal();
 });
+    $('#saveSong').on('click', handleNewSongSubmit);
 });
 
+// I HAD TO LOOK AT THIS SOLUTUION. It handles the modal fields and POSTing the form to the server
+function handleNewSongSubmit() {
+  var albumId = $('#songModal').data('album-id');
+  var songName = $('#songName').val();
+  var trackNumber = $('#trackNumber').val();
 
+  var formData = {
+    name: songName,
+    trackNumber: trackNumber
+  };
+
+  var postUrl = '/api/albums/' + albumId + '/songs';
+  console.log('posting to ', postUrl, ' with data ', formData);
+
+  $.post(postUrl, formData)
+    .success(function(song) {
+      console.log('song', song);
+
+      // re-get full album and render on page
+      $.get('/api/albums/' + albumId).success(function(album) {
+        //remove old entry
+        $('[data-album-id='+ albumId + ']').remove();
+        // render a replacement
+        renderAlbum(album);
+      });
+
+      //clear form
+      $('#songName').val('');
+      $('#trackNumber').val('');
+      $('#songModal').modal('hide');
+
+    });
+}
 
 
 function buildSongsHtml(songs) {

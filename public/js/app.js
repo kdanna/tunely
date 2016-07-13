@@ -36,31 +36,35 @@ sampleAlbums.push({
 
 
 $(document).ready(function() {
-  console.log('app.js loaded!');
-   $.get("/api/albums", function(response) {
-   response.forEach(renderAlbum);
-  });
+      console.log('app.js loaded!');
+       $.get("/api/albums", function(response) {
+       response.forEach(renderAlbum);
+      });
 
-$( "form" ).submit( function() {
-   var formdata = $(this).serialize();
-   console.log(formdata);
-   $.post( "/api/albums", formdata, function( response ) {
-   renderAlbum(response);
-   console.log(response);
-});
-   $(this).trigger("reset");
-   event.preventDefault();
-});
+    $( "form" ).submit( function() {
+       var formdata = $(this).serialize();
+       console.log(formdata);
+       $.post( "/api/albums", formdata, function( response ) {
+       renderAlbum(response);
+       console.log(response);
+    });
+       $(this).trigger("reset");
+       event.preventDefault();
+    }); 
 
 
-$('#albums').on('click', '.add-song', function(response) {
-   console.log('album onclick is working');
-   var id= $(this).parents('.album').data('album-id'); // "5665ff1678209c64e51b4e7b"
-   console.log('id',id);
-   $('#songModal').data('album-id', id);
-   $('#songModal').modal();
-});
-    $('#saveSong').on('click', handleNewSongSubmit);
+    $('#albums').on('click', '.add-song', function(response) {
+       console.log('album onclick is working');
+       var id= $(this).parents('.album').data('album-id'); // "5665ff1678209c64e51b4e7b"
+       console.log('id',id);
+       $('#songModal').data('album-id', id);
+       $('#songModal').modal();
+    });
+  
+  $('#saveSong').on('click', handleNewSongSubmit);
+
+
+  $('#albums').on('click', '.delete-album', handleDeleteAlbumClick);
 });
 
 // I HAD TO LOOK AT THIS SOLUTUION. It handles the modal fields and POSTing the form to the server
@@ -95,6 +99,19 @@ function handleNewSongSubmit() {
       $('#songModal').modal('hide');
 
     });
+}
+
+function handleDeleteAlbumClick() {
+  var albumId = $(this).parents('.album').data('album-id');
+  console.log('delete album id=' + albumId );
+  $.ajax({
+    method: 'DELETE',
+    url: ('/api/albums/' + albumId),
+    success: function() {
+      console.log("delete ajax call working");
+      $('[data-album-id='+ albumId + ']').remove();
+    }
+  });
 }
 
 
@@ -151,6 +168,7 @@ function renderAlbum(album) {
   "              </div>" + // end of panel-body
   "              <div class='panel-footer'>" +       
   "               <button class='btn btn-primary add-song'>Add Song</button>" +
+ "                <button class='btn btn-primary delete-album'>Delete Album</button>" +
 "                 </div>" +
   "            </div>" +
   "          </div>" +
